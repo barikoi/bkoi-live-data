@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ReverseGeoService } from 'src/app/services/reverse-geo.service';
-import * as d3 from 'd3';
-import { Usage } from '../../model/Usage';
+// import * as d3 from 'd3';
 import { environment } from '../../../environments/environment';
 
 declare let L;
@@ -11,33 +10,14 @@ declare let L;
   templateUrl: './map-component.component.html',
   styleUrls: ['./map-component.component.scss']
 })
+
 export class MapComponentComponent implements OnInit {
-  usage: Usage[];
-  checkReverseGeo = 0;
 
   constructor(private usageService: ReverseGeoService) {}
 
   ngOnInit() {
-    let update;
+    const center = [23.80136607530170, 90.39241790771484];
 
-    setInterval(() => {
-      this.usageService.getUsage().subscribe(
-        data => {
-          console.log(data['Reverse Geocode']);
-          if (data['Reverse Geocode'] > this.checkReverseGeo) {
-            // update();
-          }
-          this.checkReverseGeo = data['Reverse Geocode'];
-        },
-        (error: any) => {
-          console.log(error);
-        }
-      );
-    }, 10000);
-
-    const center = [23.799125, 90.41663];
-
-    const bkoiUrl = 'https://map.barikoi.com/styles/osm-bright/{z}/{x}/{y}.png';
     const bkoiAttrib =
       '<a href="https://www.mapbox.com/">Mapbox</a> | <a href="https://Barikoi.com">Barikoi</a>';
 
@@ -52,7 +32,7 @@ export class MapComponentComponent implements OnInit {
     const map = new L.Map('map', {
       layers: [osm],
       center: new L.LatLng(center[0], center[1]),
-      zoom: 13
+      zoom: 12
     });
 
     const options = {
@@ -65,17 +45,16 @@ export class MapComponentComponent implements OnInit {
 
     pingLayer.lng(d => d[0]).lat(d => d[1]);
 
-    function getRandomInRange(from, to, fixed) {
-      return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+    setInterval(() => {
+      this.usageService.getUsage().subscribe(data => {
+        update(data);
+      },
+      (error: any) => { console.log(error); });
+
+    }, 1000);
+
+    function update(data) {
+      pingLayer.ping([parseFloat(data.lon), parseFloat(data.lat)], 'green');
     }
-
-    update = () => {
-      let latFn = getRandomInRange(23.85, 23.72, 3);
-      let longFn = getRandomInRange(90.39, 90.41, 3);
-      pingLayer.ping([longFn, latFn], 'green');
-      window.setTimeout(update, +2000);
-    };
-
-    update();
   }
 }
