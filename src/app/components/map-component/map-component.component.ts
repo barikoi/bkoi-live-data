@@ -16,7 +16,7 @@ export class MapComponentComponent implements OnInit {
   constructor(private usageService: ReverseGeoService) {}
 
   ngOnInit() {
-    const center = [23.80136607530170, 90.39241790771484];
+    const center = [23.777176, 90.399452];
 
     const bkoiAttrib =
       '<a href="https://www.mapbox.com/">Mapbox</a> | <a href="https://Barikoi.com">Barikoi</a>';
@@ -32,7 +32,7 @@ export class MapComponentComponent implements OnInit {
     const map = new L.Map('map', {
       layers: [osm],
       center: new L.LatLng(center[0], center[1]),
-      zoom: 12
+      zoom: 7
     });
 
     const options = {
@@ -40,7 +40,7 @@ export class MapComponentComponent implements OnInit {
     };
 
     const pingLayer = L.pingLayer(options).addTo(map);
-    pingLayer.radiusScale().range([2, 18]);
+    pingLayer.radiusScale().range([2, 20]);
     pingLayer.opacityScale().range([1, 0]);
 
     pingLayer.lng(d => d[0]).lat(d => d[1]);
