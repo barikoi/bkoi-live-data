@@ -19,7 +19,7 @@ export class ReverseGeoService {
 
   // Get Usage
   getUsage(): Observable<Usage[]> {
-    return this.http.get<Usage[]>(`https://barikoi.xyz/v1/get/live/log`, httpOptions);
+    return this.http.get<Usage[]>(`https://admin.barikoi.xyz/v1/get/live/log`, httpOptions);
   }
   // getUsage(): any {
   //    this.http.get('https://barikoi.xyz/v1/business/api/daily/usage', httpOptions).subscribe(data => {
